@@ -48,16 +48,17 @@ jobs:
 
       - name: Install kubectl
         run: |
-          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
+          sudo apt-get update -y
+          sudo apt-get install -y kubectl
 
-      - name: Set up kubeconfig
+      - name: Configure Kubeconfig for Minikube
         run: |
-          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-          export KUBECONFIG=$PWD/kubeconfig
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          export KUBECONFIG=$HOME/.kube/config
 
       - name: Deploy to Minikube
         run: |
-          kubectl create deployment my-node-app --image=masadkh/my-node-app:latest || kubectl set image deployment/my-node-app my-node-app=masadkh/my-node-app:latest
-          kubectl expose deployment my-node-app --type=NodePort --port=3000 || true
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+
