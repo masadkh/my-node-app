@@ -51,5 +51,5 @@ jobs:
       
       - name: Deploy to Minikube
         run: |
-          kubectl create deployment my-node-app --image=your-dockerhub-username/my-node-app:latest || kubectl set image deployment/my-node-app my-node-app=your-dockerhub-username/my-node-app:latest
+          kubectl create deployment my-node-app --image=masadkh/my-node-app:latest || kubectl set image deployment/my-node-app my-node-app=masadkh/my-node-app:latest
           kubectl expose deployment my-node-app --type=NodePort --port=3000 || true
